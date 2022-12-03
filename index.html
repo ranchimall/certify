@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>RanchiMall Certificates</title>
   <link rel="stylesheet" href="css/main.css">
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Roboto:wght@400;500;700&display=swap"
@@ -32,7 +32,11 @@
 </head>
 
 <body>
-  <section id="home" class="page">
+  <section id="loader" class="page">
+    <sm-spinner></sm-spinner>
+    <p>Getting your certificates</p>
+  </section>
+  <section id="home" class="page hidden">
     <header>
       <h1>RanchiMall Certificates</h1>
     </header>
@@ -49,7 +53,7 @@
       <h2>No related certificates issued yet</h2>
     </div>
   </section>
-  <section id="certificate" class="page hidden">
+  <section id="certificate" class="grid page hidden">
     <svg id="certificate_svg" width="1400" height="980" viewBox="0 0 1400 980" fill="none"
       xmlns="http://www.w3.org/2000/svg">
       <g id="certificate">
@@ -205,6 +209,7 @@
         appState.params = params
       switch (pageId) {
         case 'home':
+          getRef('search_certificates').focusIn()
           renderElem(getRef('issued_cert_list'), html`${[...floGlobals.validCerts.values()].map(cert => render.issuedCertCard(cert))}`)
           break;
       }
@@ -241,46 +246,6 @@
   </script>
   <script>
     const { html, render: renderElem } = uhtml;
-    const slideInLeft = [
-      {
-        opacity: 0,
-        transform: 'translateX(1rem)'
-      },
-      {
-        opacity: 1,
-        transform: 'translateX(0)'
-      }
-    ]
-    const slideOutLeft = [
-      {
-        opacity: 1,
-        transform: 'translateX(0)'
-      },
-      {
-        opacity: 0,
-        transform: 'translateX(-1rem)'
-      },
-    ]
-    const slideInRight = [
-      {
-        opacity: 0,
-        transform: 'translateX(-1rem)'
-      },
-      {
-        opacity: 1,
-        transform: 'translateX(0)'
-      }
-    ]
-    const slideOutRight = [
-      {
-        opacity: 1,
-        transform: 'translateX(0)'
-      },
-      {
-        opacity: 0,
-        transform: 'translateX(1rem)'
-      },
-    ]
     const slideInDown = [
       {
         opacity: 0,
@@ -380,6 +345,12 @@
         })
         renderElem(getRef('issued_cert_list'), html`${filteredCerts.map(cert => render.issuedCertCard(cert))}`)
       })
+      document.addEventListener('keydown', e => {
+        if (e.key === '/') {
+          e.preventDefault();
+          getRef('search_certificates').focusIn()
+        }
+      })
     }
     function convertSvgToPdf(element) {
       const margin = 5
@@ -438,18 +409,21 @@
     }
     const render = {
       issuedCertCard(details) {
-        const { floData, txid, name, floId } = details
+        const { floData, txid, name, floId, certType } = details
         return html`
           <li class="cert-card">
-            <h4>${name}</h4>
+            <h4 class="capitalize">${name.toLowerCase()}</h4>
             <p class="wrap-around">${floId}</p>
-            <a href=${`#/certificate?id=${txid}`}>View</a>
+            <div class="flex align-items-center space-between">
+              <span class="tag">${certType.toLowerCase()}</span>
+              <a href=${`#/certificate?id=${txid}`}>Download</a>
+            </div>
           </li>
         `;
       },
       certificate(txid) {
-        const { floData, time, name, floId } = floGlobals.validCerts.get(txid)
-        getRef('certificate_type').firstElementChild.textContent = getFirstThreeWords(floData).toUpperCase();
+        const { floData, time, name, floId, certType, isNewer, certPara } = floGlobals.validCerts.get(txid)
+        getRef('certificate_type').firstElementChild.textContent = certType.toUpperCase();
         alignTextCenter(getRef('certificate_type').firstElementChild)
         getRef('main_name').firstElementChild.textContent = name.toUpperCase();
         alignTextCenter(getRef('main_name').firstElementChild)
@@ -458,7 +432,8 @@
         getRef('intern_flo_id').firstElementChild.textContent = floId
         alignTextCenter(getRef('intern_flo_id').firstElementChild)
         getRef('cert_data').innerHTML = ''
-        splitIntoLines(removeWordsBefore(floData, 'worked')).forEach((line, index) => {
+        const remarks = isNewer ? certPara : removeWordsBefore(floData, 'worked')
+        splitIntoLines(remarks).forEach((line, index) => {
           let tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan')
           tspan.textContent = line
           tspan.setAttribute('x', '0')
@@ -470,7 +445,7 @@
           alignTextCenter(tspan)
         })
         let certificateVerification = ''
-        switch (getFirstThreeWords(floData)) {
+        switch (certType) {
           case "CERTIFICATE OF INTERNSHIP":
             certificateVerification = 'internCertificate';
             break;
@@ -499,17 +474,26 @@
     function readTx() {
       return new Promise((resolve, reject) => {
         floBlockchainAPI.readAllTxs('FFCpiaZi31TpbYw5q5VNk8qJMeDiTLgsrE').then(res => {
-          res.forEach(tx => {
+          // res.unshift({ floData: 'CERTIFICATE OF INTERNSHIP|FPFeL5PXzW9bGosUjQYCxTHSMHidnygvvd|Sairaj mote|worked as an intern on projects for RanchiMall from 11th September 2020 to 2nd February 2021: Twitter Marketing and Peer-to-Peer Content Collaboration on FLO Blockchain. She contributed mostly to Twitter marketing and also collaborated with other content writers on writing articles for RanchiMall Times. She performed well under the guidance of the RIBC team of RanchiMall.', time: Date.now() })
+          for (tx of res) {
             const { vin, vout, time, floData } = tx
-            const iVerify = vin.some(i => i.addr === floGlobals.RM_CertificateIssuer_id);
-            const oVerify = vout.some(o => [floGlobals.RMincorporationID, floGlobals.RIBC_id].includes(o.scriptPubKey.addresses[0]));
-            const cVerify = tx.floData.startsWith('CERTIFICATE OF')
-            const floId = floData.match(/\b\w{30,36}\b/)?.[0]
-            if (iVerify && oVerify && cVerify && floId) {
-              const name = getBetween(floData, 'certifies that', 'FLO ID')
-              floGlobals.validCerts.set(tx.txid, { name, ...tx, floId })
+            if (!vin.some(i => i.addr === floGlobals.RM_CertificateIssuer_id)) continue;
+            if (!vout.some(o => [floGlobals.RMincorporationID, floGlobals.RIBC_id].includes(o.scriptPubKey.addresses[0]))) continue;
+            if (!floData.startsWith('CERTIFICATE OF')) continue;
+            let name, floId, certType, certPara = ''
+            let isNewer = true
+            // check if certificates are of newer format
+            if (floData.includes('|')) {
+              [certType, floId, name, certPara] = floData.split('|')
+            } else {
+              floId = floData.match(/\b\w{30,36}\b/)?.[0]
+              name = getBetween(floData, 'certifies that', 'FLO ID')
+              certType = getFirstThreeWords(floData)
+              isNewer = false
             }
-          })
+            if (!floId) continue;
+            floGlobals.validCerts.set(tx.txid, { name, ...tx, floId, certType, isNewer, certPara })
+          }
           resolve()
         }).catch(err => {
           reject(err)
