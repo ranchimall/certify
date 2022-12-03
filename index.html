@@ -409,10 +409,13 @@
     }
     const render = {
       issuedCertCard(details) {
-        const { floData, txid, name, floId, certType } = details
+        const { floData, txid, name, floId, certType, time } = details
         return html`
           <li class="cert-card">
-            <h4 class="capitalize">${name.toLowerCase()}</h4>
+            <div class="flex align-items-center space-between">
+              <h4 class="capitalize">${name.toLowerCase()}</h4>
+              <time>${getFormattedTime(time, 'date-only')}</time>
+            </div>
             <p class="wrap-around">${floId}</p>
             <div class="flex align-items-center space-between">
               <span class="tag">${certType.toLowerCase()}</span>
