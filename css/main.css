@@ -2,7 +2,7 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: "Times New Roman", Times, serif;
+  font-family: "Roboto", sans-serif;
 }
 
 :root {
@@ -52,23 +52,58 @@ button {
   cursor: pointer;
 }
 
-input[type=date] {
-  padding: 1rem 0.8rem;
-  font-size: inherit;
-  background-color: rgba(var(--text-color), 0.06);
-  border: none;
-  border-radius: 0.3rem;
-  font-weight: 500;
+.wrap-around {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -webkit-hyphens: auto;
+          hyphens: auto;
 }
 
-#details {
-  align-content: flex-start;
-  padding: 1.5rem;
-  display: grid;
-  gap: 1rem;
+.observe-empty-state:empty {
+  display: none;
 }
-#details * {
-  font-family: "Roboto", sans-serif;
+
+.observe-empty-state:not(:empty) ~ .empty-state {
+  display: none;
+}
+
+#home > * {
+  width: min(100%, 56rem);
+  margin: 0 auto;
+}
+#home h1 {
+  padding: 1rem;
+  padding-top: 10vmax;
+  font-size: max(1.8rem, 4vw);
+  text-align: center;
+  background: linear-gradient(135deg, #fa00ff, #00e0ff 50%, #fa00ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200%;
+  animation: gradient 20s ease infinite alternate-reverse;
+}
+@-webkit-keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+#home header {
+  width: 100%;
+  background-color: rgba(var(--text-color), 0.06);
+  padding-bottom: 2rem;
+  margin-bottom: -2rem;
 }
 
 #cert_sec {
@@ -76,11 +111,27 @@ input[type=date] {
   font-family: "intern";
 }
 
+#search_certificates {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 1rem;
+  width: min(24rem, 100% - 2rem);
+  margin: 0 auto;
+  --border-radius: 0.5rem;
+  border-radius: 0.5rem;
+  --padding: 1rem 1.2rem;
+  background-color: rgba(var(--foreground-color), 1);
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+  border: solid thin rgba(var(--text-color), 0.2);
+}
+
 #issued_cert_list {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 1.5rem;
+  padding: 1rem;
+  padding-bottom: 4rem;
+  margin-top: 1rem;
 }
 
 .cert-card {
@@ -93,12 +144,25 @@ input[type=date] {
 .cert-card h4 {
   font-size: 1.2rem;
 }
-.cert-card > * {
-  font-family: "Roboto", sans-serif;
+.cert-card p {
+  font-size: 0.9rem;
+  color: rgba(var(--text-color), 0.9);
 }
 
-@media (min-width: 768px) {
-  #main {
-    display: grid;
-  }
+#certificate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#certificate * {
+  font-family: "Times New Roman", Times, serif;
+}
+
+#certificate_svg {
+  flex-shrink: 0;
+  background-color: white;
+}
+
+.hidden {
+  display: none !important;
 }
