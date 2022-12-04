@@ -351,7 +351,7 @@
           canvas.getContext('2d').drawImage(img, 0, 0);
           const imgData = canvas.toDataURL('image/png');
           certPdf.addImage(imgData, 'PNG', 620, 670, 160, 160);
-          certPdf.save('certificate.pdf');
+          certPdf.save(`RanchiMall ${certType.toLowerCase()} for ${name}.pdf`);
         };
       }
     }
@@ -372,9 +372,9 @@
             if (floData.includes('|')) {
               [certType, floId, name, certPara] = floData.split('|')
             } else {
-              floId = floData.match(/\b\w{30,36}\b/)?.[0]
-              name = getBetween(floData, 'certifies that', 'FLO ID')
-              certType = getFirstThreeWords(floData)
+              floId = floData.match(/\b\w{30,36}\b/)?.[0].trim()
+              name = getBetween(floData, 'certifies that', 'FLO ID').trim()
+              certType = getFirstThreeWords(floData).trim()
               isNewer = false
             }
             if (!floId) continue;
