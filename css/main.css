@@ -2,7 +2,7 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: "Roboto", sans-serif;
+  font-family: "Roboto slab", serif;
 }
 
 :root {
@@ -15,7 +15,7 @@ body {
 }
 
 body {
-  --accent-color: #3d5afe;
+  --accent-color: rgb(231, 44, 55);
   --secondary-color: #ffac2e;
   --text-color: 34, 34, 34;
   --foreground-color: 252, 253, 255;
@@ -102,11 +102,7 @@ button {
   padding-top: 10vmax;
   font-size: max(1.8rem, 4vw);
   text-align: center;
-  background: linear-gradient(135deg, #fa00ff, #00e0ff 50%, #fa00ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 200%;
-  animation: gradient 20s ease infinite alternate-reverse;
+  color: var(--accent-color);
 }
 @-webkit-keyframes gradient {
   0% {
