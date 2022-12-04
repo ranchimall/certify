@@ -21,7 +21,7 @@ body {
   --foreground-color: 252, 253, 255;
   --background-color: 241, 243, 248;
   --danger-color: rgb(255, 75, 75);
-  --green: #1cad59;
+  --green: rgb(91, 33, 255);
   --yellow: rgb(220, 165, 0);
   color: rgba(var(--text-color), 1);
   background-color: rgba(var(--background-color), 1);
@@ -193,21 +193,6 @@ button {
 }
 .cert-card .tag::first-letter {
   text-transform: uppercase;
-}
-
-#certificate {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-#certificate * {
-  font-family: "Times New Roman", Times, serif;
-}
-
-#certificate_svg {
-  flex-shrink: 0;
-  background-color: white;
 }
 
 @media (max-width: 768px) {
