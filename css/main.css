@@ -60,6 +60,14 @@ button {
   display: flex;
 }
 
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.gap-0-5 {
+  gap: 0.5rem;
+}
+
 .align-items-center {
   align-items: center;
 }
@@ -74,6 +82,10 @@ button {
   word-break: break-word;
   -webkit-hyphens: auto;
           hyphens: auto;
+}
+
+.margin-left-auto {
+  margin-left: auto;
 }
 
 .observe-empty-state:empty {
@@ -155,6 +167,30 @@ button {
   margin-top: 1rem;
 }
 
+.button {
+  display: flex;
+  align-items: center;
+  padding: 0.4rem 0.8rem;
+  text-decoration: none;
+  border-radius: 3rem;
+  margin-left: auto;
+  font-weight: 500;
+  color: var(--accent-color);
+  gap: 0.3rem;
+}
+.button--primary {
+  background-color: var(--accent-color);
+  color: white;
+}
+.button--primary .icon {
+  fill: white;
+}
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: saturate(0);
+}
+
 .cert-card {
   display: grid;
   gap: 0.6rem;
@@ -172,15 +208,6 @@ button {
 .cert-card p {
   font-size: 0.9rem;
   color: rgba(var(--text-color), 0.9);
-}
-.cert-card a {
-  padding: 0.6rem 1rem;
-  text-decoration: none;
-  background-color: var(--accent-color);
-  color: white;
-  border-radius: 3rem;
-  margin-left: auto;
-  font-weight: 500;
 }
 .cert-card .tag {
   padding: 0.3rem 0.5rem;

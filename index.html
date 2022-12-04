@@ -260,40 +260,40 @@
     }
     const render = {
       issuedCertCard(details) {
-        const { floData, txid, name, floId, certType, time } = details
+        const { floData, txid, name, floId, certType, time, verificationLink } = details
         return html`
           <li class="cert-card">
             <div class="flex align-items-center space-between">
-              <h4 class="capitalize">${name.toLowerCase()}</h4>
+              <span class="tag">${certType.toLowerCase()}</span>
               <time>${getFormattedTime(time, 'date-only')}</time>
             </div>
+            <h4 class="capitalize">${name.toLowerCase()}</h4>
             <p class="wrap-around">${floId}</p>
-            <div class="flex align-items-center space-between">
-              <span class="tag">${certType.toLowerCase()}</span>
-              <a href=${`#/home/download?id=${txid}`}>Download</a>
-            </div>
+            <div class="flex align-items-center gap-0-5 margin-left-auto">
+              <a href=${verificationLink} target="_blank" class="button">Verify</a>
+              <button class="download-button button button--primary" data-txid=${txid}>
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><g><rect fill="none" height="24" width="24"/></g><g><path d="M18,15v3H6v-3H4v3c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2v-3H18z M17,11l-1.41-1.41L13,12.17V4h-2v8.17L8.41,9.59L7,11l5,5 L17,11z"/></g></svg>
+                Download
+                </button>
+          </div>
           </li>
         `;
       },
-      certificate(txid) {
-        const { floData, time, name, floId, certType, isNewer, certPara } = floGlobals.validCerts.get(txid)
+      certificate(txid, downloadButton) {
+        const { floData, time, name, floId, certType, isNewer, certPara, verificationLink } = floGlobals.validCerts.get(txid)
         let paraSplitWord
         let certificateVerification = ''
         switch (certType) {
           case "CERTIFICATE OF INTERNSHIP":
-            certificateVerification = 'internCertificate';
             paraSplitWord = 'worked'
             break;
           case "CERTIFICATE OF EMPLOYMENT":
-            certificateVerification = 'employeeCertificate';
             paraSplitWord = 'was employed'
             break;
           case "CERTIFICATE OF VOLUNTEERSHIP":
-            certificateVerification = 'volunteerCertificate';
             paraSplitWord = 'was employed'
             break;
           case "CERTIFICATE OF PARTICIPATION":
-            certificateVerification = 'participationCertificate';
             paraSplitWord = 'participated'
             break;
         }
@@ -338,7 +338,7 @@
         certPdf.text("Scan to verify this certificate", 700, 850, { align: 'center' });
         // jspdf add svg 
         let svgNode = QRCode({
-          msg: `https://www.ranchimall.net/verify/?${certificateVerification}=${txid}`,
+          msg: verificationLink,
           dim: 160
         });
         const svgData = new XMLSerializer().serializeToString(svgNode);
@@ -352,6 +352,10 @@
           const imgData = canvas.toDataURL('image/png');
           certPdf.addImage(imgData, 'PNG', 620, 670, 160, 160);
           certPdf.save(`RanchiMall ${certType.toLowerCase()} for ${name}.pdf`);
+          if (downloadButton) {
+            downloadButton.disabled = false;
+            downloadButton.lastChild.textContent = "Download";
+          }
         };
       }
     }
@@ -362,7 +366,7 @@
         floBlockchainAPI.readAllTxs('FFCpiaZi31TpbYw5q5VNk8qJMeDiTLgsrE').then(res => {
           // res.unshift({ floData: 'CERTIFICATE OF INTERNSHIP|FPFeL5PXzW9bGosUjQYCxTHSMHidnygvvd|Sairaj mote|worked as an intern on projects for RanchiMall from 11th September 2020 to 2nd February 2021: Twitter Marketing and Peer-to-Peer Content Collaboration on FLO Blockchain. She contributed mostly to Twitter marketing and also collaborated with other content writers on writing articles for RanchiMall Times. She performed well under the guidance of the RIBC team of RanchiMall.', time: Date.now() })
           for (tx of res) {
-            const { vin, vout, time, floData } = tx
+            const { vin, vout, time, floData, txid } = tx
             if (!vin.some(i => i.addr === floGlobals.RM_CertificateIssuer_id)) continue;
             if (!vout.some(o => [floGlobals.RMincorporationID, floGlobals.RIBC_id].includes(o.scriptPubKey.addresses[0]))) continue;
             if (!floData.startsWith('CERTIFICATE OF')) continue;
@@ -373,12 +377,28 @@
               [certType, floId, name, certPara] = floData.split('|')
             } else {
               floId = floData.match(/\b\w{30,36}\b/)?.[0].trim()
-              name = getBetween(floData, 'certifies that', 'FLO ID').trim()
+              name = getBetween(floData, 'certifies that', 'FLO ID').replace(/(,|\s)+$/, '')
               certType = getFirstThreeWords(floData).trim()
               isNewer = false
             }
             if (!floId) continue;
-            floGlobals.validCerts.set(tx.txid, { name, ...tx, floId, certType, isNewer, certPara })
+            let certificateVerification = ''
+            switch (certType) {
+              case "CERTIFICATE OF INTERNSHIP":
+                certificateVerification = 'internCertificate';
+                break;
+              case "CERTIFICATE OF EMPLOYMENT":
+                certificateVerification = 'employeeCertificate';
+                break;
+              case "CERTIFICATE OF VOLUNTEERSHIP":
+                certificateVerification = 'volunteerCertificate';
+                break;
+              case "CERTIFICATE OF PARTICIPATION":
+                certificateVerification = 'participationCertificate';
+                break;
+            }
+            const verificationLink = `https://www.ranchimall.net/verify/?${certificateVerification}=${txid}`
+            floGlobals.validCerts.set(txid, { name, ...tx, floId, certType, isNewer, certPara, verificationLink })
           }
           resolve()
         }).catch(err => {
@@ -386,6 +406,16 @@
         })
       })
     }
+    getRef('issued_cert_list').addEventListener('click', e => {
+      if (e.target.closest('.download-button')) {
+        const downloadButton = e.target.closest('.download-button')
+        downloadButton.disabled = true;
+        downloadButton.lastChild.textContent = 'downloading...';
+        setTimeout(() => {
+          render.certificate(downloadButton.dataset.txid, downloadButton)
+        }, 300);
+      }
+    })
   </script>
 </body>
 
