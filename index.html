@@ -359,13 +359,15 @@
           canvas.getContext('2d').drawImage(img, 0, 0);
           const imgData = canvas.toDataURL('image/png');
           certPdf.addImage(imgData, 'PNG', 620, 670, 160, 160);
-          certPdf.save(`RanchiMall ${certType.toLowerCase()} for ${name}.pdf`);
-          if (downloadButton) {
-            downloadButton.disabled = false;
-            downloadButton.lastChild.textContent = "Download";
-          }
+          certPdf.save(`RanchiMall ${certType.toLowerCase()} for ${name}.pdf`, { returnPromise: true }).then(() => {
+            if (downloadButton) {
+              downloadButton.disabled = false;
+              downloadButton.lastChild.textContent = "Download";
+            }
+          });
         };
       }
+
     }
 
     floGlobals.validCerts = new Map()
