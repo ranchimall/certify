@@ -320,17 +320,17 @@
         certPdf.rect(60, 60, 1280, 860, 'S');
         certPdf.setLineWidth(6);
         certPdf.rect(75, 75, 1250, 830, 'S');
-        certPdf.setFont('times', 'normal', '700');
+        certPdf.setFont('times', 'bold');
         certPdf.setFontSize(36);
         certPdf.text(certType.toUpperCase(), 700, 216, { align: 'center' }); // certificate type
-        certPdf.setFont('times', 'normal', '400');
+        certPdf.setFont('times', 'normal');
         certPdf.setFontSize(18);
         certPdf.text(`Issued: ${getFormattedTime(time, 'date-only')}`, 700, 254, { align: 'center' }); // issued date
         certPdf.text("RanchiMall, a blockchain incorporated entity certifies that", 700, 310, { align: 'center' });
-        certPdf.setFont('times', 'normal', '700');
+        certPdf.setFont('times', 'bold');
         certPdf.setFontSize(64);
         certPdf.text(name.toUpperCase(), 700, 380, { align: 'center' }); // name
-        certPdf.setFont('times', 'normal', '400');
+        certPdf.setFont('times', 'normal');
         certPdf.setFontSize(18);
         certPdf.text("FLO Address", 700, 420, { align: 'center' });
         certPdf.text(floId, 700, 444, { align: 'center' }); // flo address
