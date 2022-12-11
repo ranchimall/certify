@@ -336,14 +336,15 @@
         certPdf.text(floId, 700, 444, { align: 'center' }); // flo address
         certPdf.text(remarks, 700, 500, { align: 'center', maxWidth: '1000', lineHeightFactor: 1.5 });
         certPdf.setFontSize(14);
-        certPdf.text("CERTIFICATE ISSUER ADDRESS", 160, 796);
+        certPdf.text("CERTIFICATE ISSUER ADDRESS", 160, 786);
         certPdf.setFontSize(18);
-        certPdf.text("FFCpiaZi31TpbYw5q5VNk8qJMeDiTLgsrE", 160, 820);
+        certPdf.text("FFCpiaZi31TpbYw5q5VNk8qJMeDiTLgsrE", 160, 810);
         certPdf.setFontSize(14);
-        certPdf.text("INTERNSHIP CONTRACT ADDRESS", 1240, 796, { align: 'right' });
+        certPdf.text("INTERNSHIP CONTRACT ADDRESS", 1240, 786, { align: 'right' });
         certPdf.setFontSize(18);
-        certPdf.text("FDaX363r1ooANA9A2erhehhigNTnidq3o4", 1240, 820, { align: 'right' });
-        certPdf.text("Scan to verify this certificate", 700, 850, { align: 'center' });
+        certPdf.text("FDaX363r1ooANA9A2erhehhigNTnidq3o4", 1240, 810, { align: 'right' });
+        certPdf.text("Scan to verify this certificate", 700, 832, { align: 'center' });
+        certPdf.text(`Transaction ID: ${txid}`, 700, 860, { align: 'center' });
         // jspdf add svg 
         let svgNode = QRCode({
           msg: verificationLink,
@@ -358,7 +359,7 @@
         img.onload = function () {
           canvas.getContext('2d').drawImage(img, 0, 0);
           const imgData = canvas.toDataURL('image/png');
-          certPdf.addImage(imgData, 'PNG', 620, 670, 160, 160);
+          certPdf.addImage(imgData, 'PNG', 620, 660, 160, 160);
           certPdf.save(`RanchiMall ${certType.toLowerCase()} for ${name}.pdf`, { returnPromise: true }).then(() => {
             if (downloadButton) {
               downloadButton.disabled = false;
