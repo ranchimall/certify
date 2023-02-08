@@ -28,6 +28,7 @@
   <script src="scripts/lib.js"></script>
   <script src="scripts/floCrypto.js"></script>
   <script src="scripts/floBlockchainAPI.js"></script>
+  <script src="scripts/btcOperator.js"></script>
 </head>
 
 <body>
@@ -45,7 +46,7 @@
       </svg>
       <h1>RanchiMall Certificates</h1>
     </header>
-    <sm-input id="search_certificates" placeholder="FLO address or name" type="search">
+    <sm-input id="search_certificates" placeholder="FLO/BTC address or name" type="search">
       <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
         class="feather feather-search">
@@ -226,9 +227,9 @@
         routeTo(window.location.hash);
       })
       getRef('search_certificates').addEventListener('input', e => {
-        const searchQuery = e.target.value.toLowerCase();
+        const searchQuery = e.target.value.trim().toLowerCase();
         const filteredCerts = [...floGlobals.validCerts.values()].filter(cert => {
-          return cert.name.toLowerCase().includes(searchQuery) || cert.floId.toLowerCase().includes(searchQuery)
+          return cert.name.toLowerCase().includes(searchQuery) || cert.floId.toLowerCase().includes(searchQuery) || cert.btcId.toLowerCase().includes(searchQuery)
         })
         // sort filtered by relevance
         filteredCerts.sort((a, b) => {
@@ -266,7 +267,7 @@
     }
     const render = {
       issuedCertCard(details) {
-        const { floData, txid, name, floId, certType, time, verificationLink } = details
+        const { floData, txid, name, floId, btcId, certType, time, verificationLink } = details
         return html`
           <li class="cert-card">
             <div class="flex align-items-center space-between">
@@ -274,7 +275,10 @@
               <time>${getFormattedTime(time, 'date-only')}</time>
             </div>
             <h4 class="capitalize">${name.toLowerCase()}</h4>
-            <p class="wrap-around">${floId}</p>
+            <div class="grid gap-0-3">
+              <p class="wrap-around" style="font-size: 0.8rem">FLO address: ${floId}</p>
+              <p class="wrap-around" style="font-size: 0.8rem">Equivalent BTC address: ${btcId}</p>  
+            </div>
             <div class="flex align-items-center gap-0-5">
               <a href=${`https://flosight.duckdns.org/tx/${txid}`} target="_blank" class="button">View on blockchain</a>
               <a href=${verificationLink} target="_blank" class="button margin-left-auto">Verify</a>
@@ -363,7 +367,7 @@
           certPdf.save(`RanchiMall ${certType.toLowerCase()} for ${name}.pdf`, { returnPromise: true }).then(() => {
             if (downloadButton) {
               downloadButton.disabled = false;
-              downloadButton.lastChild.textContent = "Download";
+              downloadButton.lastChild.textContent = "";
             }
           });
         };
@@ -408,7 +412,8 @@
                 break;
             }
             const verificationLink = `https://www.ranchimall.net/verify/?${certificateVerification}=${txid}`
-            floGlobals.validCerts.set(txid, { name, ...tx, floId, certType, isNewer, certPara, verificationLink })
+            const btcId = btcOperator.convert.legacy2bech(floId)
+            floGlobals.validCerts.set(txid, { name, ...tx, floId, btcId, certType, isNewer, certPara, verificationLink })
           }
           resolve()
         }).catch(err => {
