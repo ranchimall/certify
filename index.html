@@ -378,12 +378,15 @@
     floGlobals.validCerts = new Map()
     function readTx() {
       return new Promise((resolve, reject) => {
-        floBlockchainAPI.readAllTxs('FFCpiaZi31TpbYw5q5VNk8qJMeDiTLgsrE').then(res => {
-          for (tx of res) {
-            const { vin, vout, time, floData, txid } = tx
-            if (!vin.some(i => i.addr === floGlobals.RM_CertificateIssuer_id)) continue;
-            if (!vout.some(o => [floGlobals.RMincorporationID, floGlobals.RIBC_id].includes(o.scriptPubKey.addresses[0]))) continue;
-            if (!floData.startsWith('CERTIFICATE OF')) continue;
+        floBlockchainAPI.readData(floGlobals.RM_CertificateIssuer_id, {
+          sentOnly: true,
+          tx: true,
+          receivers: [floGlobals.RMincorporationID, floGlobals.RIBC_id],
+          filter: d => d.startsWith('CERTIFICATE OF')
+        }).then(res => {
+          for (tx of res.items) {
+            const { time, txid } = tx;
+            const floData = tx.data;
             let name, floId, certType, certPara = ''
             let isNewer = true
             // check if certificates are of newer format
