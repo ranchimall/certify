@@ -15,9 +15,9 @@ Upon searching it provides the certificate data where the candidate can verify, 
 **Verifying certificates:** <br>
 The verification process ensures that the certificate was genuinely issued by RanchiMall. When you choose the "Verify" option, the system performs three checks: <br>
 It verifies the same using these three checks:  <br>
-**i)** Verification of Sender Address: The system validates if the sender's blockchain address is one of RanchiMall's authorized addresses. <br>
-**ii)** Verification of Receiver Address: The system verifies if the receiver's blockchain address is also one of RanchiMall's authorized addresses. <br>
-**iii)** Certificate Type Validation: The system confirms if the certificate corresponds to one of the following categories: Internship, Employment, Volunteership, or Participation. <br>
+**i)** **Verification of Sender Address:** The system validates if the sender's blockchain address is RanchiMall's authorized certificate issuance address FFCpiaZi31TpbYw5q5VNk8qJMeDiTLgsrE. <br>
+**ii)** **Verification of Receiver Address:** The system verifies if the receiver's blockchain address is also RanchiMall's authorized certificate receiving address FDaX363r1ooANA9A2erhehhigNTnidq3o4. <br>
+**iii)** **Certificate Type Validation:** The system confirms if the certificate corresponds to one of the following categories: Internship, Employment, Volunteership, or Participation. <br>
 If the certificate passes all three checks, you will be redirected to the RanchiMall website, where a verification message will confirm that RanchiMall indeed verifies the certificate. <br> <br> <br>
 
 
