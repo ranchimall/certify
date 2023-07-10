@@ -20,5 +20,5 @@ It verifies the same using these three checks:  <br>
 **iii)** **Certificate Type Validation:** The system confirms if the certificate corresponds to one of the following categories: Internship, Employment, Volunteership, or Participation. <br>
 If the certificate passes all three checks, you will be redirected to the RanchiMall website, where a verification message will confirm that RanchiMall indeed verifies the certificate. <br> <br> <br>
 
-
+**Downloading certificates:** <br>
 *All certificates can be downloaded in pdf format with the "download icon" on the certificate. It is attached with a QR code that verifies RanchiMall issued the certificate on the blockchain.*
