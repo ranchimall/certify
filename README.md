@@ -1,6 +1,6 @@
 # Certifier
  
-**RanchiMall Certificates is a blockchain-linked verification system for all RanchiMall certificates including internship, employment, volunteership, and participation. RanchiMall has a certificate issuer FLO blockchain address FFCpiaZi31TpbYw5q5VNk8qJMeDiTLgsrE and an Internship Blockchain Contract FLO address FDaX363r1ooANA9A2erhehhigNTnidq3o4. Only these two addresses are RanchiMall-authorized blockchain addresses for certificate issuance.** <br>
+RanchiMall Certificates is a blockchain-linked verification system for all RanchiMall certificates including internship, employment, volunteership, and participation. RanchiMall has a certificate issuer FLO blockchain address **FFCpiaZi31TpbYw5q5VNk8qJMeDiTLgsrE** and an Internship Blockchain Contract FLO address **FDaX363r1ooANA9A2erhehhigNTnidq3o4**. Only these two addresses are RanchiMall-authorized blockchain addresses for certificate issuance. <br>
 *(Some certificates have also been issued to RanchiMall incorporation blockchain address in the past.)* <br> <br>
 
 **Searching for certificates:** <br>
