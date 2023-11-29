@@ -267,7 +267,7 @@
     }
     const render = {
       issuedCertCard(details) {
-        const { floData, txid, name, floId, btcId, certType, time, verificationLink } = details
+        const { data, txid, name, floId, btcId, certType, time, verificationLink } = details
         return html`
           <li class="cert-card">
             <div class="flex align-items-center space-between">
@@ -290,7 +290,7 @@
         `;
       },
       certificate(txid, downloadButton) {
-        const { floData, time, name, floId, certType, isNewer, certPara, verificationLink } = floGlobals.validCerts.get(txid)
+        const { data, time, name, floId, certType, isNewer, certPara, verificationLink } = floGlobals.validCerts.get(txid)
         let paraSplitWord
         let certificateVerification = ''
         switch (certType) {
@@ -307,7 +307,7 @@
             paraSplitWord = 'participated'
             break;
         }
-        const remarks = isNewer ? certPara : removeWordsBefore(floData, paraSplitWord)
+        const remarks = isNewer ? certPara : removeWordsBefore(data, paraSplitWord)
         const certPdf = new window.jspdf.jsPDF({
           orientation: 'l',
           unit: 'pt',
