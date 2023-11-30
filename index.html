@@ -20,8 +20,8 @@
       blockchain: "FLO",
       adminID: "FKAEdnPfjXLHSYwrXQu377ugN4tXU7VGdf",
       application: "TEST_MODE",
-      RMincorporationID: "FKNW5eCCp2SnJMJ6pLLpUCvk5hAage8Jtk",
-      RIBC_id: "FDaX363r1ooANA9A2erhehhigNTnidq3o4",
+      rmIncorporationId: "FKNW5eCCp2SnJMJ6pLLpUCvk5hAage8Jtk",
+      ribcId: "FDaX363r1ooANA9A2erhehhigNTnidq3o4",
       RM_CertificateIssuer_id: "FFCpiaZi31TpbYw5q5VNk8qJMeDiTLgsrE",
     }
   </script>
@@ -346,9 +346,9 @@
         certPdf.setFontSize(14);
         certPdf.text("INTERNSHIP CONTRACT ADDRESS", 1240, 786, { align: 'right' });
         certPdf.setFontSize(18);
-        certPdf.text("FDaX363r1ooANA9A2erhehhigNTnidq3o4", 1240, 810, { align: 'right' });
+        certPdf.text(floGlobals.ribcId, 1240, 810, { align: 'right' });
         certPdf.text("Scan to verify this certificate", 700, 832, { align: 'center' });
-        certPdf.text(`Transaction ID: ${txid}`, 700, 860, { align: 'center' });
+        certPdf.textWithLink(`FLO Transaction ID: ${txid}`, 700, 860, { align: 'center', url: verificationLink });
         // jspdf add svg 
         let svgNode = QRCode({
           msg: verificationLink,
@@ -381,7 +381,7 @@
         floBlockchainAPI.readData(floGlobals.RM_CertificateIssuer_id, {
           sentOnly: true,
           tx: true,
-          receivers: [floGlobals.RMincorporationID, floGlobals.RIBC_id],
+          receivers: [floGlobals.rmIncorporationId, floGlobals.ribcId],
           filter: d => d.startsWith('CERTIFICATE OF')
         }).then(res => {
           for (tx of res.items) {
